@@ -3,7 +3,8 @@
 namespace Npds\Log;
 
 use Npds\Config\Config;
-use App\Support\Facades\Mailer;
+use Npds\Support\PhpMailer as Mailer;
+
 
 /**
  * Undocumented class
@@ -37,7 +38,7 @@ class Logger
      *
      * @var [type]
      */
-    public static $errorFile = '/storage' .DS. 'framework' .DS. 'error.log';
+    public static $errorFile = STORAGE_PATH.'framework' .DS. 'error.log';
 
     /**
      * [$error description]
@@ -128,9 +129,7 @@ class Logger
         $file = $exception->getFile();
         $line = $exception->getLine();
         $trace = $exception->getTraceAsString();
-        //$trace = str_replace(DB_PASS, '********', $trace);
         $date = date('M d, Y G:iA');
-        $rootpath = dirname(dirname(__DIR__));
 
         $logMessage = "Exception information:\n
            Date: {$date}\n
@@ -142,12 +141,12 @@ class Logger
            {$trace}\n
            ---------\n\n";
 
-        if (is_file($rootpath.self::$errorFile) === false) {
-            file_put_contents($rootpath.self::$errorFile, '');
+        if (is_file(self::$errorFile) === false) {
+            file_put_contents(self::$errorFile, '');
         }
 
         if (self::$clear) {
-            $f = fopen($rootpath.self::$errorFile, "r+");
+            $f = fopen(self::$errorFile, "r+");
             if ($f !== false) {
                 ftruncate($f, 0);
                 fclose($f);
@@ -155,7 +154,7 @@ class Logger
         }
 
         // Append
-        file_put_contents($rootpath.self::$errorFile, $logMessage, FILE_APPEND);
+        file_put_contents(self::$errorFile, $logMessage, FILE_APPEND);
 
         self::$error = $logMessage;
         self::customErrorMsg();
@@ -175,14 +174,13 @@ class Logger
     {
         $date = date('Y-m-d G:iA');
         $logMessage = "$date - $error\n\n";
-        $rootpath = dirname(dirname(__DIR__));
 
-        if (is_file($rootpath.self::$errorFile) === false) {
-            file_put_contents($rootpath.self::$errorFile, '');
+        if (is_file(self::$errorFile) === false) {
+            file_put_contents(self::$errorFile, '');
         }
 
         if (self::$clear) {
-            $f = fopen($rootpath.self::$errorFile, "r+");
+            $f = fopen(self::$errorFile, "r+");
             if ($f !== false) {
                 ftruncate($f, 0);
                 fclose($f);
@@ -191,7 +189,7 @@ class Logger
             $content = null;
         } else {
             // Append
-            file_put_contents($rootpath.self::$errorFile, $logMessage, FILE_APPEND);
+            file_put_contents(self::$errorFile, $logMessage, FILE_APPEND);
         }
 
         /** send email */
