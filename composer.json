@@ -1,0 +1,39 @@
+{
+    "name": "nicolas2-dev/my_npds_framework",
+    "type": "project",
+    "description": "Two Framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Devoy",
+            "email": "nicolas@nicodev.fr",
+            "homepage": "https://nicodev.fr",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2.1",
+        "psr/container": "^1.0",
+        "phpmailer/phpmailer": "dev-master",
+        "php81_bc/strftime": "dev-master",
+        "doctrine/inflector": "1.0.*",
+        "phpfastcache/phpfastcache": "3.0.*",
+        "symfony/var-dumper": "7.2.x-dev"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Npds\\": "src/"
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
+    },    
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev"
+}
