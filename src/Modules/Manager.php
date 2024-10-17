@@ -100,20 +100,38 @@ class Manager
 
         foreach (static::$modules as $module) {
             
-            $classKernel = 'Modules\\'.ucfirst($module).'\Bootstrap\\'.ucfirst($module).'Kernel';
+            $classKernel = '\\Modules\\'.ucfirst($module).'\\Bootstrap\\'.ucfirst($module).'Kernel';
               
             if(class_exists($classKernel) && method_exists($classKernel, 'getInstance')) {
 
-                static::$Kernel = [$module => with($classKernel::getInstance(static::$module_path .$module. DS))];
+                static::$Kernel = [ucfirst($module) => with($classKernel::getInstance(static::$module_path .ucfirst($module). DS))];
 
                 static::$has_module_been_bootstrapped = [
-                    $module => false
+                    ucfirst($module) => false
                 ];
 
-                static::bootstrap_module($module);
+                static::bootstrap_module(ucfirst($module));
+            }
+
+            if (isset(static::$Kernel[$module]::$boot_method))  {
+                static::register_boot_method($module);
             }
         }
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $module
+     * @return void
+     */
+    private static function register_boot_method($module)
+    {
+        foreach (static::$Kernel[$module]::$boot_method as $module_boot_method) {
+            call_user_func_array([static::$Kernel[$module], 'register_'.$module_boot_method], []);
+        }
+    }
+
 
     /**
      * Bootstrap the application for HTTP requests.
